@@ -4,13 +4,41 @@
             <BreadcrumbItem>User</BreadcrumbItem>
         </Breadcrumb>
         <Content class="content">
-            <Table :data="tableData1" :columns="tableColumns1" stripe></Table>
-            <div style="margin: 10px;overflow: hidden">
+            <div style="text-align:right;padding-bottom:20px;">
+                <Button to="/addUser" type="primary">添加用户</Button>
+            </div>
+            <Table
+                :loading="loading"
+                :data="currentPageUser"
+                :columns="tableColumns1"
+                stripe
+            ></Table>
+            <Modal draggable v-model="modal" width="360">
+                <p slot="header" style="color:#f60;text-align:center">
+                    <Icon type="ios-information-circle"></Icon>
+                    <span>Delete confirmation</span>
+                </p>
+                <div style="text-align:center">
+                    <p>Will you delete it?</p>
+                </div>
+                <div slot="footer">
+                    <Button
+                        type="error"
+                        size="large"
+                        long
+                        :loading="modal_loading"
+                        @click="del"
+                        >Delete</Button
+                    >
+                </div>
+            </Modal>
+            <div v-if="!loading" style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                     <Page
-                        :total="100"
-                        :current="1"
+                        :total="totalNums"
+                        :current="currentPage"
                         @on-change="changePage"
+                        show-total
                     ></Page>
                 </div>
             </div>
@@ -20,13 +48,8 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
 export default {
     name: "user",
-    components: {
-        HelloWorld
-    },
     data() {
         let nums = [];
         let i = 100;
@@ -35,8 +58,14 @@ export default {
             i--;
         } while (i >= 0);
         return {
+            modal: false,
+            loading: true,
+            modal_loading: false,
+            userSelectedId: "",
+            currentPage: 1,
             nums,
-            tableData1: this.mockTableData1(),
+            tableData1: [],
+            currentPageUser: [],
             tableColumns1: [
                 {
                     title: "Name",
@@ -97,7 +126,7 @@ export default {
                                     [
                                         h(
                                             "ul",
-                                            this.tableData1[
+                                            this.currentPageUser[
                                                 params.index
                                             ].portrayal.map(item => {
                                                 return h(
@@ -142,7 +171,7 @@ export default {
                                     [
                                         h(
                                             "ul",
-                                            this.tableData1[
+                                            this.currentPageUser[
                                                 params.index
                                             ].people.map(item => {
                                                 return h(
@@ -180,9 +209,34 @@ export default {
                         return h(
                             "div",
                             this.formatDate(
-                                this.tableData1[params.index].update
+                                this.currentPageUser[params.index].update
                             )
                         );
+                    }
+                },
+                {
+                    title: "Action",
+                    key: "action",
+                    width: 150,
+                    align: "center",
+                    render: (h, params) => {
+                        return h("div", [
+                            h(
+                                "Button",
+                                {
+                                    props: {
+                                        type: "error",
+                                        size: "small"
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index);
+                                        }
+                                    }
+                                },
+                                "Delete"
+                            )
+                        ]);
                     }
                 }
             ]
@@ -223,6 +277,7 @@ export default {
             return data;
         },
         formatDate(date) {
+            date = new Date(date);
             const y = date.getFullYear();
             let m = date.getMonth() + 1;
             m = m < 10 ? "0" + m : m;
@@ -230,9 +285,68 @@ export default {
             d = d < 10 ? "0" + d : d;
             return y + "-" + m + "-" + d;
         },
-        changePage() {
-            // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-            this.tableData1 = this.mockTableData1();
+        changePage(e) {
+            this.currentPage = e;
+            this.handlePageData();
+        },
+        remove(index) {
+            this.modal = true;
+            this.userSelectedId = this.currentPageUser[index].id;
+        },
+        getUsers() {
+            this.$axios
+                .get("/users.json")
+                .then(data => {
+                    this.loading = false;
+                    return data.data;
+                })
+                .then(data => {
+                    this.loading = false;
+                    var dataArray = [];
+                    for (var key in data) {
+                        data[key].id = key;
+                        dataArray.push(data[key]);
+                    }
+                    this.tableData1 = dataArray;
+                    this.handlePageData();
+                });
+        },
+        del() {
+            this.modal_loading = true;
+            return this.$axios
+                .delete(`/users/${this.userSelectedId}.json`)
+                .then(() => {
+                    this.modal_loading = false;
+                    this.modal = false;
+                    this.$Message.success("Successfully delete");
+                    this.getUsers();
+                });
+        },
+        handlePageData() {
+            // 处理分页数据
+            if ((this.currentPage - 1) * 10 >= this.tableData1.length) {
+                this.currentPage = this.currentPage - 1;
+            }
+            this.currentPageUser = [];
+            let start = (this.currentPage - 1) * 10;
+            let end =
+                this.tableData1.length > this.currentPage * 10
+                    ? start + 10
+                    : this.tableData1.length;
+            for (var i = start; i < end; i++) {
+                this.currentPageUser.push(this.tableData1[i]);
+            }
+        }
+    },
+    mounted() {
+        // this.$axios.post("/users.json",this.mockTableData1()[0])
+        //         .then((data) => {
+        //         })
+        this.getUsers();
+    },
+    computed: {
+        totalNums: function() {
+            return this.tableData1.length;
         }
     }
 };
