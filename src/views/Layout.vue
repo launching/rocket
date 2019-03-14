@@ -66,9 +66,9 @@
                     </Submenu>
                     <Submenu name="2">
                         <template slot="title">
-                            <Icon type="ios-keypad"></Icon>设置管理
+                            <Icon type="ios-keypad"></Icon>Rocket
                         </template>
-                        <MenuItem name="2-1">页面设置</MenuItem>
+                        <MenuItem name="2-1" to="/rocket/table">Table</MenuItem>
                         <MenuItem name="2-2">字典管理</MenuItem>
                     </Submenu>
                 </Menu>

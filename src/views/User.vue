@@ -11,7 +11,7 @@
                 :loading="loading"
                 :data="currentPageUser"
                 :columns="tableColumns1"
-                stripe
+                :stripe="true"
             ></Table>
             <Modal draggable v-model="modal" width="360">
                 <p slot="header" style="color:#f60;text-align:center">
@@ -294,9 +294,10 @@ export default {
             this.userSelectedId = this.currentPageUser[index].id;
         },
         getUsers() {
-            this.$axios
+            this.$http
                 .get("/users.json")
                 .then(data => {
+                    console.dir(data);
                     this.loading = false;
                     return data.data;
                 })
@@ -313,7 +314,7 @@ export default {
         },
         del() {
             this.modal_loading = true;
-            return this.$axios
+            return this.$http
                 .delete(`/users/${this.userSelectedId}.json`)
                 .then(() => {
                     this.modal_loading = false;
@@ -339,9 +340,6 @@ export default {
         }
     },
     mounted() {
-        // this.$axios.post("/users.json",this.mockTableData1()[0])
-        //         .then((data) => {
-        //         })
         this.getUsers();
     },
     computed: {
