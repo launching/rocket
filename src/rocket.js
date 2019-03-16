@@ -2,7 +2,11 @@ import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 import iView from "iview";
 import "iview/dist/styles/iview.css";
+import _ from "lodash";
+import Rocket from "./commons/Helper";
 
+window._ = _;
+window.Rocket = Rocket;
 const requireComponent = require.context(
     // 其组件目录的相对路径
     "./components",

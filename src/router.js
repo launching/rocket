@@ -22,6 +22,11 @@ export default new Router({
             component: () => import("./views/rocket/Table.vue")
         },
         {
+            path: "/rocket/toolbar",
+            name: "roToolbar",
+            component: () => import("./views/rocket/Toolbar.vue")
+        },
+        {
             path: "/about",
             name: "about",
             component: () =>

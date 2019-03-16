@@ -3,6 +3,7 @@ const data = [];
 let User;
 do {
     User = {
+        id: faker.random.uuid(),
         name: faker.name.findName(),
         email: faker.internet.email(),
         website: faker.internet.url(),
@@ -14,5 +15,5 @@ do {
         image: faker.image.avatar()
     };
     data.push(User);
-} while (data.length < 105);
+} while (data.length < 1);
 module.exports = data;

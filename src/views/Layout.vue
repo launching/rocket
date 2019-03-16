@@ -51,16 +51,18 @@
         <Layout>
             <Sider hide-trigger :style="{ background: '#fff' }">
                 <Menu
-                    active-name="1-1"
+                    v-if="active"
+                    :active-name.sync="active"
                     theme="light"
                     width="auto"
-                    :open-names="['1']"
+                    :open-names.sync="openName"
+                    :accordion="true"
                 >
                     <Submenu name="1">
                         <template slot="title">
                             <Icon type="ios-navigate"></Icon>帐号管理
                         </template>
-                        <MenuItem name="1-1">用户管理</MenuItem>
+                        <MenuItem name="1-1" to="/">用户管理</MenuItem>
                         <MenuItem name="1-2">角色管理</MenuItem>
                         <MenuItem name="1-3">权限管理</MenuItem>
                     </Submenu>
@@ -68,14 +70,18 @@
                         <template slot="title">
                             <Icon type="ios-keypad"></Icon>Rocket
                         </template>
-                        <MenuItem name="2-1" to="/rocket/table">Table</MenuItem>
-                        <MenuItem name="2-2">字典管理</MenuItem>
+                        <MenuItem name="2-1" to="/rocket/table">
+                            Table
+                        </MenuItem>
+                        <MenuItem name="2-2" to="/rocket/toolbar">
+                            Toolbar
+                        </MenuItem>
                     </Submenu>
                 </Menu>
             </Sider>
             <Layout
                 :style="{
-                    padding: '0 24px 24px'
+                    padding: '0 10px 10px'
                 }"
             >
                 <router-view></router-view>
@@ -87,7 +93,25 @@
 export default {
     components: {},
     data() {
-        return {};
+        const menu = {
+            user: "1-1",
+            addUser: "1-1",
+            roTable: "2-1",
+            roToolbar: "2-2"
+        };
+
+        return {
+            menu
+        };
+    },
+    computed: {
+        active() {
+            return this.menu[this.$route.name];
+        },
+        openName() {
+            let tmp = this.active.split("")[0];
+            return [tmp];
+        }
     },
     methods: {},
     mounted() {}
