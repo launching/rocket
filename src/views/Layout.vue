@@ -50,14 +50,7 @@
         </Header>
         <Layout>
             <Sider hide-trigger :style="{ background: '#fff' }">
-                <Menu
-                    v-if="active"
-                    :active-name.sync="active"
-                    theme="light"
-                    width="auto"
-                    :open-names.sync="openName"
-                    :accordion="true"
-                >
+                <Menu theme="light" width="auto" :accordion="true">
                     <Submenu name="1">
                         <template slot="title">
                             <Icon type="ios-navigate"></Icon>帐号管理
@@ -76,6 +69,12 @@
                         <MenuItem name="2-2" to="/rocket/toolbar">
                             Toolbar
                         </MenuItem>
+                        <MenuItem name="2-3" to="/rocket/curd">
+                            Curd
+                        </MenuItem>
+                        <MenuItem name="2-4" to="/rocket/form">
+                            Form
+                        </MenuItem>
                     </Submenu>
                 </Menu>
             </Sider>
@@ -93,26 +92,9 @@
 export default {
     components: {},
     data() {
-        const menu = {
-            user: "1-1",
-            addUser: "1-1",
-            roTable: "2-1",
-            roToolbar: "2-2"
-        };
-
-        return {
-            menu
-        };
+        return {};
     },
-    computed: {
-        active() {
-            return this.menu[this.$route.name];
-        },
-        openName() {
-            let tmp = this.active.split("")[0];
-            return [tmp];
-        }
-    },
+    computed: {},
     methods: {},
     mounted() {}
 };

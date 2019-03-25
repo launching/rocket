@@ -10,7 +10,7 @@ import axios from "axios";
 axios.defaults.baseURL = "https://wd2077915826usmudk.wilddogio.com/";
 Vue.use(rocket);
 Vue.prototype.$http = axios;
-Vue.config.productionTip = false;
+Vue.config.productionTip = true;
 
 new Vue({
     router,

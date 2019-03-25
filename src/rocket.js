@@ -7,14 +7,6 @@ import Rocket from "./commons/Helper";
 
 window._ = _;
 window.Rocket = Rocket;
-const requireComponent = require.context(
-    // 其组件目录的相对路径
-    "./components",
-    // 是否查询其子目录
-    false,
-    // 匹配基础组件文件名的正则表达式
-    /[A-Z]\w+\.(vue|js)$/
-);
 
 export default {
     /**
@@ -25,6 +17,23 @@ export default {
     install(Vue) {
         Vue.use(iView);
 
+        const requireComponent = require.context(
+            // 其组件目录的相对路径
+            "./components",
+            // 是否查询其子目录
+            false,
+            // 匹配基础组件文件名的正则表达式
+            /[A-Z]\w+\.(vue|js)$/
+        );
+
+        const requireDirective = require.context(
+            // 其组件目录的相对路径
+            "./directives",
+            // 是否查询其子目录
+            false,
+            // 匹配基础组件文件名的正则表达式
+            /[A-Z]\w+\.(vue|js)$/
+        );
         requireComponent.keys().forEach(fileName => {
             // 获取组件配置
             const componentConfig = requireComponent(fileName);
@@ -43,6 +52,18 @@ export default {
                 // 那么就会优先使用 `.default`，
                 // 否则回退到使用模块的根。
                 componentConfig.default || componentConfig
+            );
+        });
+
+        requireDirective.keys().forEach(fileName => {
+            const directiveConfig = requireDirective(fileName);
+            const directiveName = upperFirst(
+                camelCase(fileName.replace(/^\.\/(.*)\.\w+$/, "$1"))
+            );
+            Vue.directive(
+                `Ro${directiveName}`,
+
+                directiveConfig.default || directiveConfig
             );
         });
     }

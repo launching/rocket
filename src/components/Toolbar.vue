@@ -1,6 +1,7 @@
 <template>
     <div class="ro-toolbar">
         <Button
+            v-ro-premise="tool.premise"
             v-for="(tool, $index) in tools"
             :key="$index"
             v-bind="tool"
@@ -15,32 +16,18 @@ const _ = window._;
 export default {
     components: {},
     props: {
-        option: {},
+        tools: Array,
         ctx: {
             type: Object,
             default: function() {}
         }
     },
-    computed: {
-        tools() {
-            var tmps;
-            if (_.isArray(this.option)) {
-                tmps = this.option;
-            } else {
-                tmps = this.option.tools;
-            }
-            return tmps;
-        }
-    },
+    computed: {},
     data() {
         return {};
     },
     methods: {
         operate(tool, index) {
-            if (tool.signal) {
-                return this.$emit("signal", tool.signal, this.ctx);
-            }
-
             let confirm = tool.confirm;
             if (confirm) {
                 let opt = {
@@ -59,19 +46,38 @@ export default {
                     })
                     .then(content => {
                         opt.content = content;
-                        opt.onOk = () => {
-                            Promise.resolve()
-                                .then(() => {
-                                    return tool.operate(this.ctx);
-                                })
-                                .then(res => {
-                                    this.$Modal.remove();
-                                });
-                        };
+                        ["ok", "cancel"].forEach(item => {
+                            opt[`on${_.capitalize(item)}`] = () => {
+                                let ctx = {
+                                    ...this.ctx,
+                                    on: item
+                                };
+                                if (tool.signal) {
+                                    this.ctx.on = item;
+                                    return this.$emit(
+                                        "signal",
+                                        tool.signal,
+                                        ctx
+                                    );
+                                }
+
+                                Promise.resolve()
+                                    .then(() => {
+                                        return tool.operate.call(this, ctx);
+                                    })
+                                    .then(res => {
+                                        item === "ok" && this.$Modal.remove();
+                                    });
+                            };
+                        });
+
                         this.$Modal.confirm(opt);
                     });
             } else {
-                return tool.operate(this.ctx);
+                if (tool.signal) {
+                    return this.$emit("signal", tool.signal, this.ctx);
+                }
+                return tool.operate.call(this, this.ctx);
             }
         }
     },

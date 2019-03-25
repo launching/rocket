@@ -10,12 +10,13 @@ options : {
 -->
 <template>
     <Page
-        :total="total"
-        :current="current"
+        :total="option.total"
+        :current="option.current"
         size="small"
-        :page-size="size"
+        :page-size="option.size"
         show-elevator
         show-sizer
+        show-total
         @on-change="changeCurrent"
         @on-page-size-change="changePageSize"
     />
@@ -24,24 +25,17 @@ options : {
 export default {
     props: {
         option: {
-            type: Object
+            type: Object,
+            default() {
+                return {};
+            }
         }
     },
     components: {},
     data() {
         return {};
     },
-    computed: {
-        total() {
-            return this.option.total || 0;
-        },
-        current() {
-            return this.option.current || 0;
-        },
-        size() {
-            return this.option.size || 1;
-        }
-    },
+    computed: {},
     methods: {
         changeCurrent(num) {
             this.$emit("signal", "current", num);

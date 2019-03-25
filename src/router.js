@@ -27,6 +27,16 @@ export default new Router({
             component: () => import("./views/rocket/Toolbar.vue")
         },
         {
+            path: "/rocket/curd",
+            name: "roCurd",
+            component: () => import("./views/rocket/Curd.vue")
+        },
+        {
+            path: "/rocket/form",
+            name: "roForm",
+            component: () => import("./views/rocket/Form.vue")
+        },
+        {
             path: "/about",
             name: "about",
             component: () =>

@@ -10,7 +10,7 @@
             <ro-toolbar :option="toolbar"></ro-toolbar>
         </div>
         <div>
-            <ro-toolbar :option="toolbar1"></ro-toolbar>
+            <ro-toolbar :tools="toolbar1"></ro-toolbar>
         </div>
     </div>
 </template>

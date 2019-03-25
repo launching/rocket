@@ -6,9 +6,14 @@
 <template>
     <div class="rov-table">
         <h1>TABLE</h1>
+        <Button @click="change">修改</Button>
         <ro-table
             ref="table"
-            :option="{ columns: columns1, data: data1 }"
+            v-bind="{
+                columns: columns1,
+                data: data1,
+                showIndex: true
+            }"
             @signal="tableSignal"
         >
         </ro-table>
@@ -20,6 +25,7 @@ export default {
     data() {
         var self = this;
         return {
+            editorStatus: false,
             columns1: [
                 {
                     title: "Name",
@@ -51,7 +57,8 @@ export default {
                             size: "small",
                             text: "delete",
                             confirm: "确定要删除这条记录吗?",
-                            operate({ column, index, row }) {
+                            operate({ column, index, row, on }) {
+                                if (on === "cancel") return;
                                 return self.$http
                                     .delete(
                                         `http://localhost:8888/user/${row.id}`
@@ -86,6 +93,11 @@ export default {
         };
     },
     methods: {
+        change() {
+            this.showIndex = !this.showIndex;
+            this.multiCheck = !this.multiCheck;
+            console.dir(this.showIndex);
+        },
         tableSignal() {}
     },
     mounted() {}

@@ -22,29 +22,53 @@ options : {
 -->
 <template>
     <div class="ro-table">
-        <Table :columns="columns" :data="targetList">
+        <Table
+            :columns="showColumns"
+            :data="targetList"
+            @on-selection-change="selectChange"
+        >
             <template v-slot:action="ctx">
                 <ro-toolbar :option="ctx.column" :ctx="ctx"></ro-toolbar>
             </template>
         </Table>
-        <div class="page" v-if="!status.loading">
-            <ro-page :option="page" @signal="pageSignal"></ro-page>
+        <div class="page">
+            <ro-page :option.sync="page" @signal="pageSignal"></ro-page>
         </div>
     </div>
 </template>
 <script>
+const _ = window._;
 export default {
     components: {},
     props: {
-        option: Object
+        columns: {
+            type: [Object, String, Function, Array]
+        },
+        data: {
+            type: [Object, String, Function]
+        },
+        store: {
+            type: [Object, String, Function]
+        },
+        toolbar: {
+            type: [Object, String, Function]
+        },
+        page: {
+            type: [Object, String, Function],
+            default: () => {
+                return { current: 1, size: 10, total: 0 };
+            }
+        },
+        showIndex: {
+            type: Boolean,
+            default: false
+        },
+        multiCheck: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
-        const page = {
-            current: 1,
-            size: 10,
-            ...this.option.page
-        };
-
         return {
             status: {
                 loading: false
@@ -53,43 +77,76 @@ export default {
             targetList: [], //视图数据,
             localPage: false,
             servicePage: false, //是否是服务器分页
-            page
+            selectRows: []
         };
     },
     computed: {
-        columns() {
-            const tmp = this.option.columns.map(item => {
-                if (item.type === "operate") {
-                    item.slot = "action";
-                }
-                return item;
-            });
-
-            return tmp || {};
+        showColumns() {
+            let columns = _.cloneDeep(this.columns);
+            if (this.showIndex) {
+                columns.unshift({ type: "index", width: 60, align: "center" });
+            }
+            if (this.multiCheck) {
+                columns.unshift({
+                    type: "selection",
+                    width: 50,
+                    align: "center"
+                });
+            }
+            return columns
+                .map(item => {
+                    if (item.type === "operate") {
+                        item.render = (h, params) => {
+                            return h("ro-toolbar", {
+                                props: { tools: item.tools, ctx: params }
+                            });
+                        };
+                    }
+                    return item;
+                })
+                .filter(item => {
+                    if (item.premise === undefined) {
+                        item.premise = true;
+                    }
+                    return _.isFunction(item.premise)
+                        ? item.premise.call(this)
+                        : item.premise;
+                });
         }
     },
-    watchs: {},
     methods: {
         getList() {
             this.status.loading = true;
-            var data = this.option.data;
+            var data = this.data;
             this.servicePage = false;
-            window.Rocket.generateList(data, this).then(res => {
-                if (window._.isArray(res)) {
-                    this.list = res;
-                    this.page.total = this.list.length;
-                } else if (window._.isObject(res)) {
-                    this.servicePage = true;
-                    this.list = res.data;
-                    this.page.total = parseInt(res.total);
-                }
-                this.dealData();
-            });
+
+            Promise.resolve(true)
+                .then(() => {
+                    if (data) {
+                        return window.Rocket.generateFunction(data, this);
+                    } else if (this.store) {
+                        return this.store.get({
+                            page: this.page.current,
+                            limit: this.page.size
+                        });
+                    }
+                    return [];
+                })
+                .then(res => {
+                    if (window._.isArray(res)) {
+                        this.list = res;
+                        this.page.total = this.list.length;
+                    } else if (window._.isObject(res)) {
+                        this.servicePage = true;
+                        this.list = res.data;
+                        this.page.total = parseInt(res.total);
+                    }
+                    this.dealData();
+                });
         },
         dealData() {
             this.status.loading = false;
-
-            if (!this.option.localPage) {
+            if (!this.localPage) {
                 return (this.targetList = this.list);
             }
             this.targetList = this.list.slice(
@@ -98,6 +155,7 @@ export default {
             );
         },
         pageSignal(type, num) {
+            this.selectRows = [];
             if (type === "size") {
                 this.page.size = num;
                 this.page.current = 1;
@@ -113,6 +171,32 @@ export default {
         },
         refresh() {
             this.getList();
+        },
+        selectChange(rows) {
+            this.selectRows = rows;
+            this.$emit("signal", "selectChange", {
+                columns: this.columns,
+                data: this.list,
+                rows
+            });
+        },
+        toolbarSignal(type, ctx) {
+            let tool;
+            this.tools.forEach(item => {
+                if (item.signal === type) {
+                    tool = item;
+                }
+            });
+            Promise.resolve()
+                .then(() => {
+                    return tool.operate.call(this, ctx);
+                })
+                .then(res => {
+                    if (ctx.on === "ok") {
+                        this.$Modal.remove();
+                    }
+                    this.refresh();
+                });
         }
     },
     mounted() {
