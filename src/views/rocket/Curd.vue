@@ -5,19 +5,22 @@
 </style>
 <template>
     <div class="rov-table">
-        <h1>CURD</h1>
         <ro-curd ref="table" v-bind="curd" @signal="tableSignal"> </ro-curd>
     </div>
 </template>
 <script>
 import curd from "./curd";
 export default {
+    props: {
+        option: [Object]
+    },
     components: {},
     data() {
         return {
             curd
         };
     },
+    computed: {},
     methods: {
         tableSignal() {}
     },

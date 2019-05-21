@@ -23,7 +23,7 @@
 export default {
     components: {},
     data() {
-        var self = this;
+        const self = this;
         return {
             editorStatus: false,
             columns1: [

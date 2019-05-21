@@ -1,8 +1,8 @@
-import axios from "axios";
 import https from "./https";
 export default class Store {
     constructor(url) {
         this.url = url;
+        return this;
     }
 
     get(option) {
@@ -18,11 +18,7 @@ export default class Store {
             });
     }
 
-    post() {}
-
-    delete() {}
-
-    put() {}
-
-    patch() {}
+    delete(id) {
+        return https.delete(`${this.url}/${id}`);
+    }
 }

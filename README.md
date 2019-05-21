@@ -16,13 +16,11 @@
 启动mock后显示数据(npm run mock)
 
     Resources
-    http://localhost:8888/base_user
+   
     http://localhost:8888/user
 
 直接在浏览器打开即可，详情参考[json-server](https://github.com/typicode/json-server)rest接口为更好的模拟接口访问情况，配置后端路由转换，
 
-    http://localhost:8888/base_user //被转换成如下
-    http://localhost:8888/base/user
 
 ## 文件系统介绍
 
@@ -36,6 +34,8 @@ components文件为rockets组件目录采用自动加载，如:
 
 1. 用户管理
 
+> 展示用户列表页面
+
 2. 角色管理
 
 3. 权限管理
@@ -45,6 +45,8 @@ components文件为rockets组件目录采用自动加载，如:
 ## 组件功能
 
 1. table 表格
+
+> 简化页面调用参数  
 
 2. 表格
 

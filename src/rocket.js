@@ -8,7 +8,7 @@ import Rocket from "./commons/Helper";
 window._ = _;
 window.Rocket = Rocket;
 
-export default {
+const rocket = {
     /**
      *
      * @param {*} Vue
@@ -68,3 +68,4 @@ export default {
         });
     }
 };
+export default rocket;

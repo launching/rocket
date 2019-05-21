@@ -27,9 +27,6 @@ options : {
             :data="targetList"
             @on-selection-change="selectChange"
         >
-            <template v-slot:action="ctx">
-                <ro-toolbar :option="ctx.column" :ctx="ctx"></ro-toolbar>
-            </template>
         </Table>
         <div class="page">
             <ro-page :option.sync="page" @signal="pageSignal"></ro-page>
@@ -37,7 +34,8 @@ options : {
     </div>
 </template>
 <script>
-const _ = window._;
+import _ from "lodash";
+import Helper from "../commons/Helper";
 export default {
     components: {},
     props: {
@@ -82,7 +80,8 @@ export default {
     },
     computed: {
         showColumns() {
-            let columns = _.cloneDeep(this.columns);
+            let columns = Helper.initColumns(this.columns);
+
             if (this.showIndex) {
                 columns.unshift({ type: "index", width: 60, align: "center" });
             }
@@ -96,11 +95,7 @@ export default {
             return columns
                 .map(item => {
                     if (item.type === "operate") {
-                        item.render = (h, params) => {
-                            return h("ro-toolbar", {
-                                props: { tools: item.tools, ctx: params }
-                            });
-                        };
+                        item = Helper.initTableOperate.call(this, item);
                     }
                     return item;
                 })
@@ -117,13 +112,13 @@ export default {
     methods: {
         getList() {
             this.status.loading = true;
-            var data = this.data;
+            const data = this.data;
             this.servicePage = false;
 
-            Promise.resolve(true)
+            Promise.resolve()
                 .then(() => {
                     if (data) {
-                        return window.Rocket.generateFunction(data, this);
+                        return Helper.generateFunction(data, this);
                     } else if (this.store) {
                         return this.store.get({
                             page: this.page.current,
@@ -133,10 +128,10 @@ export default {
                     return [];
                 })
                 .then(res => {
-                    if (window._.isArray(res)) {
+                    if (_.isArray(res)) {
                         this.list = res;
                         this.page.total = this.list.length;
-                    } else if (window._.isObject(res)) {
+                    } else if (_.isObject(res)) {
                         this.servicePage = true;
                         this.list = res.data;
                         this.page.total = parseInt(res.total);
