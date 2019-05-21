@@ -1,20 +1,42 @@
 <template>
     <div class="ro-curd">
-        <ro-table v-bind="table"></ro-table>
+        <div class="ro-table-header">
+            <Input
+                class="search-filter-input"
+                search
+                enter-button
+                on-search="filterSearch"
+            />
+        </div>
+
+        <ro-table v-bind="table" ref="table"></ro-table>
     </div>
 </template>
 <script>
+import _ from "lodash";
 export default {
     props: {
-        table: [Object]
+        table: [Object],
+        filter: [String]
     },
     components: {},
     data() {
-        return {};
+        const search = {};
+        if (_.isString(this.filter)) {
+            search[this.filter] = "";
+        }
+        return {
+            search
+        };
     },
-    methods: {},
-    mounted() {
-        console.dir(this.table);
-    }
+    methods: {
+        filterSearch(value) {
+            if (_.isString(this.filter)) {
+                this.search[this.filter] = value;
+            }
+            this.$refs.table(this.search);
+        }
+    },
+    mounted() {}
 };
 </script>

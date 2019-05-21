@@ -14,7 +14,12 @@ export default class Store {
                 }
             })
             .then(res => {
-                return { total: res.headers["x-total-count"], data: res.data };
+                let data = res.data;
+                let total = res.data.length;
+                if (res.headers["x-total-count"]) {
+                    total = res.headers["x-total-count"];
+                }
+                return { total, data };
             });
     }
 

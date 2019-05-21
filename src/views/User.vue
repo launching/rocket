@@ -9,7 +9,8 @@
         <ro-curd
             ref="table"
             v-bind="{
-                table
+                table,
+                filter
             }"
         >
         </ro-curd>
@@ -24,9 +25,11 @@ export default {
         return {
             table: {
                 showIndex: true,
+                localPage: true,
                 columns: ["name", "age", "address", ["view", "delete"]],
                 store: new Store("http://localhost:8888/user")
-            }
+            },
+            filter: "name"
         };
     },
     methods: {}

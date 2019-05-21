@@ -28,7 +28,7 @@ options : {
             @on-selection-change="selectChange"
         >
         </Table>
-        <div class="page">
+        <div class="page" v-if="showPage">
             <ro-page :option.sync="page" @signal="pageSignal"></ro-page>
         </div>
     </div>
@@ -64,6 +64,10 @@ export default {
         multiCheck: {
             type: Boolean,
             default: false
+        },
+        localPage: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -73,9 +77,9 @@ export default {
             },
             list: [], //源数据
             targetList: [], //视图数据,
-            localPage: false,
-            servicePage: false, //是否是服务器分页
-            selectRows: []
+            selectRows: [],
+            filter: {},
+            servicePage: true
         };
     },
     computed: {
@@ -107,22 +111,25 @@ export default {
                         ? item.premise.call(this)
                         : item.premise;
                 });
+        },
+        showPage() {
+            // return !this.servicePage && !this.localPage;
+            return this.localPage;
         }
     },
     methods: {
         getList() {
             this.status.loading = true;
             const data = this.data;
-            this.servicePage = false;
-
+            this.servicePage = true;
             Promise.resolve()
                 .then(() => {
                     if (data) {
                         return Helper.generateFunction(data, this);
                     } else if (this.store) {
                         return this.store.get({
-                            page: this.page.current,
-                            limit: this.page.size
+                            // page: this.page.current
+                            // limit: this.page.size
                         });
                     }
                     return [];
@@ -131,8 +138,8 @@ export default {
                     if (_.isArray(res)) {
                         this.list = res;
                         this.page.total = this.list.length;
+                        this.servicePage = false;
                     } else if (_.isObject(res)) {
-                        this.servicePage = true;
                         this.list = res.data;
                         this.page.total = parseInt(res.total);
                     }
@@ -143,11 +150,12 @@ export default {
             this.status.loading = false;
             if (!this.localPage) {
                 return (this.targetList = this.list);
+            } else {
+                this.targetList = this.list.slice(
+                    (this.page.current - 1) * this.page.size,
+                    this.page.current * this.page.size
+                );
             }
-            this.targetList = this.list.slice(
-                (this.page.current - 1) * this.page.size,
-                this.page.current * this.page.size
-            );
         },
         pageSignal(type, num) {
             this.selectRows = [];
@@ -164,7 +172,15 @@ export default {
                 this.dealData();
             }
         },
-        refresh() {
+        refresh(filter) {
+            if (filter) {
+                this.page.current = 1;
+                if (_.isPlainObject(filter)) {
+                    this.filter = filter;
+                } else {
+                    this.filter = {};
+                }
+            }
             this.getList();
         },
         selectChange(rows) {

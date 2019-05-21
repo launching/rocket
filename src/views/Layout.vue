@@ -80,7 +80,9 @@
             </Sider>
             <Layout
                 :style="{
-                    padding: '0 10px 10px'
+                    padding: '0 10px 10px',
+                    height: '100%',
+                    overflowY: 'auto'
                 }"
             >
                 <router-view></router-view>

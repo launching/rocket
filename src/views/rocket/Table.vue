@@ -96,7 +96,6 @@ export default {
         change() {
             this.showIndex = !this.showIndex;
             this.multiCheck = !this.multiCheck;
-            console.dir(this.showIndex);
         },
         tableSignal() {}
     },
