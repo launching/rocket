@@ -6,14 +6,7 @@
 <template>
     <div class="rov-table">
         <h1>USER</h1>
-        <ro-curd
-            ref="table"
-            v-bind="{
-                table,
-                filter
-            }"
-        >
-        </ro-curd>
+        <ro-table ref="table" v-bind="table"></ro-table>
     </div>
 </template>
 <script>
@@ -22,12 +15,14 @@ import Store from "../commons/Store";
 export default {
     components: {},
     data() {
+        const store = new Store("http://localhost:8888/user");
         return {
             table: {
                 showIndex: true,
-                localPage: true,
                 columns: ["name", "age", "address", ["view", "delete"]],
-                store: new Store("http://localhost:8888/user")
+                data() {
+                    return store.get();
+                }
             },
             filter: "name"
         };

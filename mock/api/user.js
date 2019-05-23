@@ -16,5 +16,5 @@ do {
         image: faker.image.avatar()
     };
     data.push(User);
-} while (data.length < 45);
+} while (data.length < 19);
 module.exports = data;

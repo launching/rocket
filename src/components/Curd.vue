@@ -5,10 +5,9 @@
                 class="search-filter-input"
                 search
                 enter-button
-                on-search="filterSearch"
+                @on-search="filterSearch"
             />
         </div>
-
         <ro-table v-bind="table" ref="table"></ro-table>
     </div>
 </template>
@@ -34,7 +33,7 @@ export default {
             if (_.isString(this.filter)) {
                 this.search[this.filter] = value;
             }
-            this.$refs.table(this.search);
+            this.$refs.table.refresh(this.search);
         }
     },
     mounted() {}

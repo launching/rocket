@@ -29,13 +29,17 @@ options : {
         >
         </Table>
         <div class="page" v-if="showPage">
-            <ro-page :option.sync="page" @signal="pageSignal"></ro-page>
+            <ro-page :option.sync="pageOption" @signal="pageSignal"></ro-page>
         </div>
     </div>
 </template>
 <script>
 import _ from "lodash";
 import Helper from "../commons/Helper";
+import Store from "../commons/Store";
+const LOCAL = "local";
+const SERVICE = "service";
+
 export default {
     components: {},
     props: {
@@ -43,7 +47,7 @@ export default {
             type: [Object, String, Function, Array]
         },
         data: {
-            type: [Object, String, Function]
+            type: [Object, String, Function, Array]
         },
         store: {
             type: [Object, String, Function]
@@ -51,11 +55,14 @@ export default {
         toolbar: {
             type: [Object, String, Function]
         },
-        page: {
-            type: [Object, String, Function],
-            default: () => {
-                return { current: 1, size: 10, total: 0 };
-            }
+
+        pagination: {
+            type: Boolean,
+            default: true
+        },
+        pageSize: {
+            type: [Number],
+            default: 10
         },
         showIndex: {
             type: Boolean,
@@ -79,7 +86,9 @@ export default {
             targetList: [], //视图数据,
             selectRows: [],
             filter: {},
-            servicePage: true
+            servicePage: false,
+            total: 0,
+            page: 1
         };
     },
     computed: {
@@ -113,35 +122,39 @@ export default {
                 });
         },
         showPage() {
-            // return !this.servicePage && !this.localPage;
             return this.localPage;
+        },
+        pageOption() {
+            return {
+                current: this.page || 1,
+                size: this.pageSize || 10,
+                total: this.total
+            };
         }
     },
     methods: {
         getList() {
             this.status.loading = true;
-            const data = this.data;
-            this.servicePage = true;
-            Promise.resolve()
-                .then(() => {
-                    if (data) {
-                        return Helper.generateFunction(data, this);
+            Promise.resolve(this.data)
+                .then(res => {
+                    if (res) {
+                        if (_.isString(res)) {
+                            const store = new Store(res);
+                            return store.get();
+                        }
+                        return Helper.generateFunction(res, this);
                     } else if (this.store) {
-                        return this.store.get({
-                            // page: this.page.current
-                            // limit: this.page.size
-                        });
+                        return this.store.get({});
                     }
                     return [];
                 })
                 .then(res => {
                     if (_.isArray(res)) {
                         this.list = res;
-                        this.page.total = this.list.length;
-                        this.servicePage = false;
+                        this.total = this.list.length;
                     } else if (_.isObject(res)) {
                         this.list = res.data;
-                        this.page.total = parseInt(res.total);
+                        this.total = res.total;
                     }
                     this.dealData();
                 });
@@ -149,11 +162,15 @@ export default {
         dealData() {
             this.status.loading = false;
             if (!this.localPage) {
+                //服务器端分页
                 return (this.targetList = this.list);
             } else {
-                this.targetList = this.list.slice(
-                    (this.page.current - 1) * this.page.size,
-                    this.page.current * this.page.size
+                // 本地分页
+                this.targetList = Helper.filterList(
+                    this.list,
+                    this.filter,
+                    this.page.current,
+                    this.page.size
                 );
             }
         },
@@ -181,7 +198,11 @@ export default {
                     this.filter = {};
                 }
             }
-            this.getList();
+            if (this.servicePage) {
+                this.getList();
+            } else {
+                this.dealData();
+            }
         },
         selectChange(rows) {
             this.selectRows = rows;

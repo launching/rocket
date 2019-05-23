@@ -1,4 +1,4 @@
-const _ = window._;
+import _ from "lodash";
 export default {
     /**
      *
@@ -8,7 +8,7 @@ export default {
     generateFunction(data, ctx) {
         return Promise.resolve(true).then(() => {
             if (_.isFunction(data)) {
-                return data(ctx);
+                return data.call(ctx);
             }
             return data;
         });
@@ -81,5 +81,15 @@ export default {
         };
 
         return operate;
+    },
+
+    filterList(list, filter, current, size) {
+        let target = _.cloneDeep(list);
+        for (let key in filter) {
+            target = target.filter(item => {
+                return item[key] && item[key].indexOf(filter[key]) > -1;
+            });
+        }
+        return target.splice((current - 1) * size, current * size);
     }
 };

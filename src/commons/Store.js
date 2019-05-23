@@ -6,12 +6,10 @@ export default class Store {
     }
 
     get(option) {
+        const params = {};
         return https
             .get(this.url, {
-                params: {
-                    _page: option.page,
-                    _limit: option.limit
-                }
+                params
             })
             .then(res => {
                 let data = res.data;
@@ -19,6 +17,7 @@ export default class Store {
                 if (res.headers["x-total-count"]) {
                     total = res.headers["x-total-count"];
                 }
+
                 return { total, data };
             });
     }
