@@ -38,10 +38,10 @@ export default {
     computed: {},
     methods: {
         changeCurrent(num) {
-            this.$emit("signal", "current", num);
+            this.$emit("signal", "_page", num);
         },
         changePageSize(size) {
-            this.$emit("signal", "size", size);
+            this.$emit("signal", "_limit", size);
         }
     },
     mounted() {}

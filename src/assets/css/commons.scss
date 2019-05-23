@@ -7,6 +7,13 @@
         background: #fff;
     }
 }
+
+.pull-right {
+    float: right;
+}
+.pull-left {
+    float: left;
+}
 @import "./toolbar.scss";
 @import "./table.scss";
 @import "./form.scss";

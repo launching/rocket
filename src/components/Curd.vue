@@ -1,14 +1,16 @@
 <template>
     <div class="ro-curd">
         <div class="ro-table-header">
+            <ro-toolbar class="pull-right" :tools="rightTools" :ctx="{}">
+            </ro-toolbar>
             <Input
                 class="search-filter-input"
                 search
                 enter-button
-                @on-search="filterSearch"
+                @on-search="search"
             />
         </div>
-        <ro-table v-bind="table" ref="table"></ro-table>
+        <ro-table :option="table" ref="table"></ro-table>
     </div>
 </template>
 <script>
@@ -16,25 +18,28 @@ import _ from "lodash";
 export default {
     props: {
         table: [Object],
-        filter: [String]
+        filter: [String],
+        control: [Array]
     },
     components: {},
-    data() {
-        const search = {};
-        if (_.isString(this.filter)) {
-            search[this.filter] = "";
+    computed: {
+        rightTools() {
+            let control = this.control;
+            return control.map(it => {
+                return {
+                    text: it,
+                    type: "primary",
+                    operate: (...args) => this.create(...args)
+                };
+            });
         }
-        return {
-            search
-        };
+    },
+    data() {
+        return {};
     },
     methods: {
-        filterSearch(value) {
-            if (_.isString(this.filter)) {
-                this.search[this.filter] = value;
-            }
-            this.$refs.table.refresh(this.search);
-        }
+        search(value) {},
+        create() {}
     },
     mounted() {}
 };

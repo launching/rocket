@@ -5,8 +5,11 @@ export default class Store {
         return this;
     }
 
+    searchHandler(option) {
+        return option;
+    }
     get(option) {
-        const params = {};
+        const params = this.searchHandler(option);
         return https
             .get(this.url, {
                 params
@@ -18,7 +21,7 @@ export default class Store {
                     total = res.headers["x-total-count"];
                 }
 
-                return { total, data };
+                return { total: +total, data };
             });
     }
 

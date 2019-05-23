@@ -6,7 +6,7 @@
 <template>
     <div class="rov-table">
         <h1>USER</h1>
-        <ro-table ref="table" v-bind="table"></ro-table>
+        <ro-curd :table="table" v-bind="{ filter, control, store }"></ro-curd>
     </div>
 </template>
 <script>
@@ -17,14 +17,14 @@ export default {
     data() {
         const store = new Store("http://localhost:8888/user");
         return {
+            filter: "name",
+            control: ["create"],
+            store,
             table: {
                 showIndex: true,
                 columns: ["name", "age", "address", ["view", "delete"]],
-                data() {
-                    return store.get();
-                }
-            },
-            filter: "name"
+                data: res => store.get(res)
+            }
         };
     },
     methods: {}

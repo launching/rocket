@@ -8,7 +8,7 @@ export default {
     generateFunction(data, ctx) {
         return Promise.resolve(true).then(() => {
             if (_.isFunction(data)) {
-                return data.call(ctx);
+                return data(ctx);
             }
             return data;
         });
