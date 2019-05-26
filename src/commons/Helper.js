@@ -56,16 +56,9 @@ export default {
                 size: "small",
                 text: "delete",
                 confirm: "确定要删除这条记录吗?",
-                operate: ({ row, on }) => {
-                    if (on === "cancel") return;
-                    return this.store.delete(row.id).then(res => {
-                        if (res.status === 200) {
-                            this.$Message.success("删除成功");
-                            this.refresh();
-                        } else {
-                            this.$Message.error("删除失败");
-                        }
-                    });
+                operate: opt => {
+                    if (opt.on === "cancel") return;
+                    return this.$emit("signal", "delete", opt.row);
                 }
             }
         };

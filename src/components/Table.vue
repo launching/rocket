@@ -56,7 +56,7 @@ export default {
             targetList: [], //视图数据,
             selectRows: [],
             filter: {
-                _limit: -1,
+                _limit: 10,
                 _page: 1
             },
             servicePage: false,

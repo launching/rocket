@@ -22,8 +22,21 @@ export default {
             store,
             table: {
                 showIndex: true,
-                columns: ["name", "age", "address", ["view", "delete"]],
+                columns: ["name", "age", ["view", "delete"]],
                 data: res => store.get(res)
+            },
+            form: {
+                fields: [
+                    {
+                        label: "名字",
+                        widget: "Input"
+                    },
+                    {
+                        label: "年龄",
+                        widget: "Number"
+                    }
+                ],
+                submit: res => store.put(res)
             }
         };
     },
