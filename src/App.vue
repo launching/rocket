@@ -6,24 +6,11 @@ html {
 }
 </style>
 <template>
-    <ro-layout></ro-layout>
+    <router-view></router-view>
 </template>
 <script>
-import RoLayout from "./views/Layout.vue";
 export default {
-    components: {
-        RoLayout
-    },
-    data() {
-        let nums = [];
-        let i = 100;
-        do {
-            nums.push(i);
-            i--;
-        } while (i >= 0);
-        return {
-            nums
-        };
-    }
+    components: {},
+    data() {}
 };
 </script>
