@@ -1,37 +1,42 @@
 <style lang="scss">
 .v-layout {
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
     position: absolute;
-    border-radius: 4px;
     overflow: hidden;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-
+    .layout-out {
+        background: transparent;
+    }
     .layout-logo {
-        width: 100px;
-        height: 30px;
-        background: #5b6270;
-        border-radius: 3px;
+        font-size: 30px;
         float: left;
-        position: relative;
-        top: 15px;
-        left: 20px;
+        font-family: monospace;
+        margin-left: 60px;
     }
     .layout-nav {
         width: 420px;
         margin: 0 auto;
         margin-right: 20px;
     }
+
+    .ivu-layout-header {
+        background: transparent;
+        box-shadow: 1px 0px 5px 5px #999;
+        z-index: 1;
+        height: 60px;
+    }
+    .ivu-menu-light {
+        background: transparent;
+    }
 }
 </style>
 <template>
-    <Layout class="v-layout">
+    <Layout class="v-layout" :style="{ backgroundImage: cover }">
         <Header>
-            <Menu mode="horizontal" theme="dark" active-name="1">
-                <div class="layout-logo"></div>
+            <Menu mode="horizontal" theme="light" active-name="1">
+                <div class="layout-logo"><strong>R</strong>ocket</div>
                 <div class="layout-nav">
                     <MenuItem name="1">
                         <Icon type="ios-navigate"></Icon>Item 1
@@ -91,10 +96,13 @@
     </Layout>
 </template>
 <script>
+import cover from "@/assets/img/cover.jpg";
 export default {
     components: {},
     data() {
-        return {};
+        return {
+            cover
+        };
     },
     computed: {},
     methods: {},
