@@ -6,6 +6,15 @@
     left: 0;
     right: 0;
     bottom: 0;
+
+    &.ivu-layout {
+        background: url("~@/assets/img/cover.jpg");
+    }
+
+    .ivu-layout {
+        background: url("~@/assets/img/cover.jpg");
+    }
+
     .layout-out {
         background: transparent;
     }
@@ -29,6 +38,55 @@
     }
     .ivu-menu-light {
         background: transparent;
+    }
+    .ivu-layout-sider {
+        background: transparent;
+        border-right: 1px solid rgba(#ccc, 0.2);
+    }
+    .ivu-menu-light {
+        &.ivu-menu-vertical {
+            &.ivu-menu-light:after {
+                content: none;
+            }
+            .ivu-menu-item:hover,
+            .ivu-menu-submenu-title:hover {
+                color: white;
+                background: rgba(#000, 0.1);
+            }
+            .ivu-menu-item-active:not(.ivu-menu-submenu) {
+                color: white;
+                background: rgba(#000, 0.1);
+                &:hover {
+                    color: white;
+                    background: rgba(#000, 0.1);
+                }
+                &:after {
+                    content: none;
+                }
+            }
+        }
+
+        &.ivu-menu-horizontal {
+            &:after {
+                background: transparent;
+            }
+
+            .ivu-menu-item-active {
+                color: white;
+                border-bottom: none;
+                background: rgba(#000, 0.1);
+            }
+
+            .ivu-menu-item {
+                &:hover {
+                    @extend .ivu-menu-item-active;
+                }
+            }
+
+            .ivu-menu-submenu:hover {
+                @extend .ivu-menu-item-active;
+            }
+        }
     }
 }
 </style>
@@ -54,7 +112,7 @@
             </Menu>
         </Header>
         <Layout>
-            <Sider hide-trigger :style="{ background: '#fff' }">
+            <Sider hide-trigger>
                 <Menu theme="light" width="auto" :accordion="true">
                     <Submenu name="1">
                         <template slot="title">
