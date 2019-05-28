@@ -1,0 +1,11 @@
+.ivu-input{
+    box-shadow:none;
+    &:focus.ivu-input-default {
+        box-shadow:none;
+    }
+    &.ivu-input-default {
+        background: transparent;
+        color:white;
+    }
+}
+
