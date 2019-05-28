@@ -1,5 +1,5 @@
 .ro-curd {
-    background: rgba(#000, 0.25);
+    background: rgba(#000, 0.15);
     border-radius: 3px;
     .ro-table-header {
         padding-top: 10px;
@@ -26,6 +26,7 @@
             }
             .ivu-input {
                 background: transparent;
+                color: white;
                 &:focus {
                     border-color: white;
                     box-shadow: none;

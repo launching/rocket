@@ -1,6 +1,10 @@
 <style lang="scss">
 .rov-table {
     margin-top: 10px;
+    h1 {
+        -webkit-text-stroke: 1px white;
+        color: transparent;
+    }
 }
 </style>
 <template>
