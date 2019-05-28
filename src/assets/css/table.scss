@@ -3,6 +3,7 @@
     display: inline-block;
     width: 100%;
 
+
     .header-operate {
         margin-bottom: 10px;
     }
@@ -10,4 +11,47 @@
         margin-top: 10px;
         float: right;
     }
+    .ivu-table-wrapper{
+        background: transparent;
+        border-radius: 3px;
+        .ivu-table {
+            background-color: transparent;
+            color: white;
+            border-radius: 3px;
+            border-right: 1px solid rgba(#ffffff, 0.5);
+            border-bottom: 1px solid rgba(#ffffff, 0.5);
+            tr:last-child td{
+                border-bottom: none;
+            }
+            .ivu-table-header {
+                border-radius: 3px;
+            }
+            &:before,&:after{
+                content: none;
+            }
+            .ivu-table-overflowX{
+                overflow: hidden;
+            }
+            .ivu-table-tip{
+                overflow: hidden;
+            }
+
+            .ro-toolbar .ivu-btn-text {
+                color: white;
+                &:hover {
+                    background: transparent;
+                    border: 1px solid;
+                    color:#57a3f3;
+                }
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+        }
+        th,td {
+            background: transparent;
+        }
+
+    }
+
 }

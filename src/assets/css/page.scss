@@ -1,0 +1,45 @@
+.ivu-page {
+    span{
+        color: white;
+    }
+
+    li {
+        background: transparent;
+        a {
+            color: white;
+        }
+
+        &.ivu-page-disabled a {
+            color: #ccc;
+        }
+    }
+
+    .ivu-page-options{
+        .ivu-select-selection{
+            background: transparent;
+            color: white;
+
+            i {
+                color: white;
+            }
+        }
+        .ivu-select-dropdown{
+            background: rgba(#333, 0.2);
+            box-shadow: 0px 0px 2px 0px #fff;
+            color: white;
+            ul >li.ivu-select-item {
+                color: white;
+                &:hover {
+                    background: rgba(#fff, 0.3);
+                }
+            }
+        }
+        .ivu-page-options-elevator{
+            color: white;
+            input{
+                color: white;
+                background: transparent;
+            }
+        }
+    }
+}

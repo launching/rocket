@@ -53,7 +53,7 @@ export default {
             this.$refs.table.getList({ name_like: value });
         },
         create() {
-            this.status = "CREATE";
+            // this.status = "CREATE";
         },
         tableSignal(type, data) {
             if (type === "delete") {

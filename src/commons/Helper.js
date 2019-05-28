@@ -55,6 +55,7 @@ export default {
                 type: "text",
                 size: "small",
                 text: "delete",
+                style: "{ color: white}",
                 confirm: "确定要删除这条记录吗?",
                 operate: opt => {
                     if (opt.on === "cancel") return;
