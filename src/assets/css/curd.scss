@@ -7,6 +7,9 @@
         padding-right: 10px;
         .search-filter-input {
             width: 250px;
+            .ivu-input {
+                background: rgba(#FFF, 0.1);
+            }
         }
     }
 }

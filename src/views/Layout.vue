@@ -25,9 +25,8 @@
         margin-left: 60px;
     }
     .layout-nav {
-        width: 420px;
-        margin: 0 auto;
-        margin-right: 20px;
+        float: left;
+        margin-left: 50px;
     }
 
     .ivu-layout-header {
@@ -41,7 +40,6 @@
     }
     .ivu-layout-sider {
         background: transparent;
-        border-right: 1px solid rgba(#ccc, 0.2);
     }
     .ivu-menu-light {
         &.ivu-menu-vertical {
