@@ -2,10 +2,12 @@
     box-shadow:none;
     &:focus.ivu-input-default {
         box-shadow:none;
+        border-color: rgba(#2d8cf0, 0.7) !important;
     }
     &.ivu-input-default {
         background: transparent;
         color:white;
+        border:1px solid white;
     }
 }
 

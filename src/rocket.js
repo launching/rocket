@@ -21,7 +21,7 @@ const rocket = {
             // 其组件目录的相对路径
             "./components",
             // 是否查询其子目录
-            false,
+            true,
             // 匹配基础组件文件名的正则表达式
             /[A-Z]\w+\.(vue|js)$/
         );
@@ -45,6 +45,8 @@ const rocket = {
                     fileName.replace(/^\.\/(.*)\.\w+$/, "$1")
                 )
             );
+            console.dir(componentName);
+
             // 全局注册组件
             Vue.component(
                 `Ro${componentName}`,

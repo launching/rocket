@@ -1,32 +1,38 @@
+<template>
+    <div>
+        <component
+            :is="widget"
+            :option="option"
+            :value.sync="value"
+            :model="model"
+            @ready="widgetReady"
+            @change="widgetChange"
+        ></component>
+    </div>
+</template>
 <script>
 const _ = window._;
 export default {
     props: {
-        labelWidth: Number,
-        label: String,
-        widget: String
+        option: [Object],
+        value: [String, Number, Object, Array],
+        model: [Object]
     },
     components: {},
     computed: {
-        itemProps() {
-            const props = {};
-            ["label", "labelWidth"].forEach(item => {
-                this[item] && (props[item] = this[item]);
-            });
-            return props;
+        widget() {
+            return `ro-widget-${this.option.widget}`;
         }
     },
     data() {
         return {};
     },
-    methods: {},
-    mounted() {},
-    render(h, props) {
-        console.dir(this.props);
-        console.dir(this.$attrs);
-        return h("FormItem", { props: this.itemProps }, [
-            h(this.widget, { props: this.$attrs })
-        ]);
-    }
+    methods: {
+        widgetReady() {},
+        widgetChange(value) {
+            this.$emit("change", value);
+        }
+    },
+    mounted() {}
 };
 </script>

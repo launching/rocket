@@ -1,83 +1,78 @@
 <template>
-    <Form class="ro-form">
-        <ro-field
-            v-bind="field"
-            v-for="(field, index) in _fields"
+    <Form class="ro-form" ref="form" :model="model" :rules="rules">
+        <FormItem
+            v-for="(field, index) in fields"
             :key="index"
-        ></ro-field>
+            :label="field.label"
+            :prop="field.name"
+            :required="field.required"
+        >
+            <ro-field
+                :option="field"
+                :value="model[field.name]"
+                :model="model"
+                @ready="ready"
+                @change="value => change(value, field)"
+            ></ro-field>
+        </FormItem>
+
+        <FormItem>
+            <ro-toolbar :tools="tools"></ro-toolbar>
+        </FormItem>
     </Form>
 </template>
 <script>
-let _ = window._;
+import _ from "lodash";
 export default {
     props: {
-        fields: {
-            type: Array
-        },
-        submit: {
-            type: Function
-        },
-        reset: {
-            type: Function
-        },
-        labelWidth: Number
+        option: [Object]
     },
     components: {},
     data() {
         return {
-            itemPropName: "labelWidth".split(","),
-            model: {}
+            fields: [],
+            tools: [],
+            model: {},
+            rules: {}
         };
     },
-    computed: {
-        _fields() {
-            const fields = _.cloneDeep(this.fields);
-            fields.push({
-                widget: "roToolbar",
-                tools: [
-                    {
-                        text: "提交",
-                        operate: () => this.operate("submit")
-                    },
-                    {
-                        text: "取消",
-                        operate: () => this.operate("reset")
-                    }
-                ]
-            });
-
-            for (let p of this.itemPropName) {
-                fields.forEach(item => {
-                    item[p] = item[p] || this[p];
-                });
-            }
-
-            return fields || [];
-        }
-    },
+    computed: {},
     methods: {
-        operate(type) {
-            if (_.isFunction(this[type.toLowerCase()])) {
-                Promise.resolve(this[type.toLowerCase()](this.model))
-                    .then(res => {
-                        this.$emit(
-                            "signal",
-                            type.toUpperCase(),
-                            res,
-                            this.model
-                        );
-                    })
-                    .catch(res => {
-                        this.$emit(
-                            "signal",
-                            type.toUpperCase() + "-ERROR",
-                            res,
-                            this.model
-                        );
-                    });
-            }
-        }
+        init() {
+            this.fields = this.option.fields;
+
+            this.fields.forEach(item => {
+                this.$set(this.model, item.name, "");
+                item.rule && this.$set(this.rules, item.name, item.rule);
+            });
+            const tools = [
+                { text: "submit", operate: () => this.submit() },
+                {
+                    text: "cancel",
+                    operate: () => this.reset()
+                }
+            ];
+            this.tools = this.option.tools || tools;
+        },
+        reset() {
+            this.$refs.form.resetFields();
+        },
+        async submit() {
+            const valid = await this.valid();
+        },
+        async valid() {
+            const valid = await this.$refs.form.validate();
+            if (!valid) this.$Message.error("提交信息不合法");
+            return valid;
+        },
+        refresh() {},
+        change(value, field) {
+            this.model[field.name] = value;
+        },
+        ready() {}
     },
-    mounted() {}
+    mounted() {
+        this.init();
+    }
 };
 </script>

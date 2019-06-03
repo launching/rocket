@@ -1,8 +1,10 @@
 <template>
-    <Layout class="v-layout" :style="{ backgroundImage: cover }">
+    <Layout class="v-layout">
         <Header>
             <Menu mode="horizontal" theme="light" active-name="1">
-                <div class="layout-logo"><strong>R</strong>ocket</div>
+                <div class="layout-logo">
+                    <img :src="logo" width="60" height="60" />ocket
+                </div>
                 <div class="layout-nav">
                     <MenuItem name="1">
                         <Icon type="ios-navigate"></Icon>Item 1
@@ -21,30 +23,28 @@
         </Header>
         <Layout>
             <Sider hide-trigger>
-                <Menu theme="light" width="auto" :accordion="true">
-                    <Submenu name="1">
+                <Menu
+                    theme="light"
+                    width="auto"
+                    :active-name="activeName"
+                    :open-names="openName"
+                >
+                    <Submenu
+                        v-for="(menu, mIndex) in menus"
+                        :name="mIndex"
+                        :key="menu.id"
+                    >
                         <template slot="title">
-                            <Icon type="ios-navigate"></Icon>帐号管理
+                            <Icon :type="menu.icon" />
+                            {{ menu.text }}
                         </template>
-                        <MenuItem name="1-1" to="/">用户管理</MenuItem>
-                        <MenuItem name="1-2">角色管理</MenuItem>
-                        <MenuItem name="1-3">权限管理</MenuItem>
-                    </Submenu>
-                    <Submenu name="2">
-                        <template slot="title">
-                            <Icon type="ios-keypad"></Icon>Rocket
-                        </template>
-                        <MenuItem name="2-1" to="/rocket/table">
-                            Table
-                        </MenuItem>
-                        <MenuItem name="2-2" to="/rocket/toolbar">
-                            Toolbar
-                        </MenuItem>
-                        <MenuItem name="2-3" to="/rocket/curd">
-                            Curd
-                        </MenuItem>
-                        <MenuItem name="2-4" to="/rocket/form">
-                            Form
+                        <MenuItem
+                            v-for="(item, index) in menu.children"
+                            :key="item.id"
+                            :name="`${mIndex}-${index}`"
+                            :to="{ name: item.name }"
+                        >
+                            {{ item.text }}
                         </MenuItem>
                     </Submenu>
                 </Menu>
@@ -62,16 +62,50 @@
     </Layout>
 </template>
 <script>
-import cover from "@/assets/img/cover.jpg";
+import logo from "@/assets/img/rocket.svg";
 export default {
     components: {},
     data() {
+        console.dir(this.$route.name);
         return {
-            cover
+            logo,
+            menus: [
+                {
+                    id: "account",
+                    text: "账号管理",
+                    icon: "ios-navigate",
+                    children: [
+                        {
+                            id: "user",
+                            name: "userList",
+                            text: "用户管理"
+                        },
+                        {
+                            id: "role",
+                            name: "roleList",
+                            text: "角色管理"
+                        },
+                        {
+                            id: "auth",
+                            name: "authList",
+                            text: "权限列表"
+                        }
+                    ]
+                }
+            ],
+            activeName: "0-0",
+            openName: []
         };
     },
     computed: {},
-    methods: {},
-    mounted() {}
+    methods: {
+        initRoute() {
+            const Tree = it => it.name;
+        }
+    },
+    mounted() {
+        this.initRoute();
+        this.$router.push({ name: "userList" });
+    }
 };
 </script>
