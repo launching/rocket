@@ -45,7 +45,6 @@ const rocket = {
                     fileName.replace(/^\.\/(.*)\.\w+$/, "$1")
                 )
             );
-            console.dir(componentName);
 
             // 全局注册组件
             Vue.component(

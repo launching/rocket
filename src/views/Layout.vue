@@ -66,6 +66,7 @@ import logo from "@/assets/img/rocket.svg";
 export default {
     components: {},
     data() {
+
         return {
             logo,
             menus: [
@@ -84,6 +85,16 @@ export default {
                         {
                             name: "authList",
                             text: "权限列表"
+                        },
+                        {
+                            id: "vueExplain",
+                            name: "Observe",
+                            text: "vue解析"
+                        },
+                        {
+                            id: "VirtualDom",
+                            name: "VirtualDom",
+                            text: "vue解析"
                         }
                     ]
                 },
