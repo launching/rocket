@@ -12,7 +12,7 @@ export default {
             component: UserList
         },
         {
-            path: "/create",
+            path: "create",
             name: "userCreate",
             component: UserCreate
         }

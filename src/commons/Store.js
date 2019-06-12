@@ -28,4 +28,8 @@ export default class Store {
     delete(id) {
         return https.delete(`${this.url}/${id}`);
     }
+
+    post(model) {
+        return https.post(this.url, model);
+    }
 }

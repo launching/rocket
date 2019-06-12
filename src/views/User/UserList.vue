@@ -25,7 +25,13 @@ export default {
         const store = new Store("http://localhost:8888/user");
         return {
             filter: "name",
-            control: ["create"],
+            control: [
+                {
+                    text: "create",
+                    type: "primary",
+                    signal: "CREATE"
+                }
+            ],
             store,
             table: {
                 showIndex: true,
@@ -36,14 +42,17 @@ export default {
                 fields: [
                     {
                         label: "名字",
-                        widget: "Input"
+                        widget: "Input",
+                        name: "name",
+                        required: true
                     },
                     {
                         label: "年龄",
-                        widget: "Number"
+                        widget: "InputNumber",
+                        name: "age",
+                        required: true
                     }
-                ],
-                submit: res => store.put(res)
+                ]
             }
         };
     },

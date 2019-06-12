@@ -66,7 +66,6 @@ import logo from "@/assets/img/rocket.svg";
 export default {
     components: {},
     data() {
-        console.dir(this.$route.name);
         return {
             logo,
             menus: [
@@ -115,7 +114,6 @@ export default {
     },
     mounted() {
         this.initRoute();
-        this.$router.push({ name: "userList" });
     }
 };
 </script>

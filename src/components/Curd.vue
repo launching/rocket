@@ -2,7 +2,12 @@
     <div class="ro-curd">
         <div class="ro-curd-list" v-if="status === 'LIST'">
             <div class="ro-table-header">
-                <ro-toolbar class="pull-right" :tools="rightTools" :ctx="{}">
+                <ro-toolbar
+                    class="pull-right"
+                    :tools="rightTools"
+                    :ctx="{}"
+                    @signal="rightToolsHandle"
+                >
                 </ro-toolbar>
                 <Input
                     class="search-filter-input"
@@ -18,7 +23,7 @@
             ></ro-table>
         </div>
         <div class="ro-curd-create" v-if="status === 'CREATE'">
-            ro-form
+            <ro-form :option="form" @signal="formHandle"></ro-form>
         </div>
     </div>
 </template>
@@ -28,19 +33,14 @@ export default {
         table: [Object],
         filter: [String],
         control: [Array],
-        store: [Object]
+        store: [Object],
+        form: [Object]
     },
     components: {},
     computed: {
         rightTools() {
             let control = this.control;
-            return control.map(it => {
-                return {
-                    text: it,
-                    type: "primary",
-                    operate: (...args) => this.create(...args)
-                };
-            });
+            return control;
         }
     },
     data() {
@@ -51,9 +51,6 @@ export default {
     methods: {
         search(value) {
             this.$refs.table.getList({ name_like: value });
-        },
-        create() {
-            // this.status = "CREATE";
         },
         tableSignal(type, data) {
             if (type === "delete") {
@@ -69,6 +66,27 @@ export default {
                     this.$Message.error("删除失败");
                 }
             });
+        },
+        rightToolsHandle(type) {
+            this.status = type;
+        },
+        async formSubmit(model) {
+            const res = await this.store.post(model);
+            if (res) {
+                this.status = "LIST";
+                this.$refs.table.refresh();
+            }
+        },
+        formCancel() {
+            this.status = "LIST";
+            this.$refs.table.refresh();
+        },
+        formHandle(type, ...args) {
+            if (type === "submit") {
+                this.formSubmit(...args);
+            } else if (type === "cancel") {
+                this.formCancel(...args);
+            }
         }
     },
     mounted() {}

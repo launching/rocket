@@ -54,11 +54,22 @@ export default {
             ];
             this.tools = this.option.tools || tools;
         },
-        reset() {
+        async reset() {
             this.$refs.form.resetFields();
+            if (this.option.cancel) {
+                return await this.option.cancel();
+            } else {
+                this.$emit("cancel", this.model);
+            }
         },
         async submit() {
             const valid = await this.valid();
+            if (!valid) return;
+            if (this.option.submit) {
+                return await this.option.submit(this.model);
+            } else {
+                this.$emit("submit", this.model);
+            }
         },
         async valid() {
             const valid = await this.$refs.form.validate();

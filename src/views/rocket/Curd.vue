@@ -5,7 +5,7 @@
 </style>
 <template>
     <div class="rov-table">
-        <ro-curd ref="table" v-bind="curd" @signal="tableSignal"> </ro-curd>
+        <ro-curd ref="table" v-bind="curd" @signal="tableSignal"></ro-curd>
     </div>
 </template>
 <script>
