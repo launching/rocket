@@ -32,7 +32,7 @@
                     <Submenu
                         v-for="(menu, mIndex) in menus"
                         :name="mIndex"
-                        :key="menu.id"
+                        :key="mIndex"
                     >
                         <template slot="title">
                             <Icon :type="menu.icon" />
@@ -40,7 +40,7 @@
                         </template>
                         <MenuItem
                             v-for="(item, index) in menu.children"
-                            :key="item.id"
+                            :key="index"
                             :name="`${mIndex}-${index}`"
                             :to="{ name: item.name }"
                         >
@@ -71,30 +71,40 @@ export default {
             logo,
             menus: [
                 {
-                    id: "account",
                     text: "账号管理",
                     icon: "ios-navigate",
                     children: [
                         {
-                            id: "user",
                             name: "userList",
                             text: "用户管理"
                         },
                         {
-                            id: "role",
                             name: "roleList",
                             text: "角色管理"
                         },
                         {
-                            id: "auth",
                             name: "authList",
                             text: "权限列表"
+                        }
+                    ]
+                },
+                {
+                    text: "Rocket",
+                    icon: "ios-navigate",
+                    children: [
+                        {
+                            name: "RocketForm",
+                            text: "RocketForm"
+                        },
+                        {
+                            name: "RocketToolbar",
+                            text: "RocketToolbar"
                         }
                     ]
                 }
             ],
             activeName: "0-0",
-            openName: []
+            openName: [0, 1]
         };
     },
     computed: {},

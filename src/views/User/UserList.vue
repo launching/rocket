@@ -10,7 +10,10 @@
 <template>
     <div class="rov-table">
         <h1>USER</h1>
-        <ro-curd :table="table" v-bind="{ filter, control, store }"></ro-curd>
+        <ro-curd
+            :table="table"
+            v-bind="{ filter, control, store, form }"
+        ></ro-curd>
     </div>
 </template>
 <script>
